@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap'); /* Load Cormorant Garamond and Montserrat fonts from Google Fonts */
+
+@import "tailwindcss"; /* Import Tailwind CSS framework styles and utility classes */
+
+@theme { /* Define a custom theme block for Tailwind v4 configurations */
+  --color-bg-primary: #F5F8FF; /* Set the primary background theme color to soft light blue */
+  --color-bg-secondary: #FFFFFF; /* Set the secondary background theme color to pure white */
+  --color-bg-deep: #1E293B; /* Set the deep navy background color for sidebars and headers */
+  --color-dashboard-bg: #EAF0FF; /* Dashboard main background with soft blue tone */
+  --color-dashboard-gradient-start: #F5F8FF; /* Dashboard gradient start color */
+  --color-dashboard-gradient-end: #DCE6FF; /* Dashboard gradient end color */
+  --color-sidebar-blue: #7090E5; /* Slightly darker blue for sidebar */
+  --color-primary-blue: #8CA5FF; /* Primary theme color for dashboards */
+  --color-warm-beige: #F5F0E8; /* Set the elegant warm beige color for light-themed components */
+  --color-deep-beige: #E8DDD0; /* Set the darker beige accent color for light theme */
+  --color-charcoal: #2C2C2C; /* Set the primary charcoal color for high-contrast light mode text */
+  --color-charcoal-light: #4A4A4A; /* Set the lighter charcoal color for light mode body copy */
+  --color-gold: #D4AF37; /* Set the main gold branding accent color representing Ambo University */
+  --color-gold-light: #F0D060; /* Set the brighter gold accent color for elements with hover states */
+  --color-indigo-main: #4F46E5; /* Set the primary indigo branding color for interactive button elements */
+  --color-cyan-main: #06B6D4; /* Set the vibrant cyan color for active badges and icons */
+  --font-serif: "Cormorant Garamond", Georgia, serif; /* Pair the serif font utility with Cormorant Garamond */
+  --font-sans: "Montserrat", Inter, sans-serif; /* Pair the sans font utility with Montserrat */
+} /* Close the theme configuration block */
+
+body { /* Apply base stylesheet properties on the body element */
+  font-family: 'Montserrat', sans-serif; /* Apply Montserrat as the primary default font for UI text */
+  background-color: #F8FAFC; /* Set default body background to light slate/off-white */
+  color: #1E293B; /* Set default body text color to deep navy blue for readability */
+  margin: 0; /* Remove default margin spacing around the HTML document body */
+  padding: 0; /* Remove default padding spacing around the HTML document body */
+} /* Close body styles */
+
+h1, h2, h3 { /* Apply consistent typography configurations to all primary headings */
+  font-family: 'Cormorant Garamond', serif; /* Force serif font styling for h1, h2, and h3 headings */
+  color: #1E3A5F; /* Force dark blue color for all headings */
+} /* Close heading styles */
+
+/* Global fix for text-white class to use dark blue on dashboard pages */
+.min-h-screen:not(.auth-page) .text-white,
+.min-h-screen:not(.auth-page) h1,
+.min-h-screen:not(.auth-page) h2,
+.min-h-screen:not(.auth-page) h3 {
+  color: #1E3A5F !important; /* Override white text with dark blue */
+}
+
+.min-h-screen:not(.auth-page) .text-white\/40 {
+  color: #4A5F7F !important; /* Override text-white/40 with medium blue */
+}
+
+.min-h-screen:not(.auth-page) .text-white\/30 {
+  color: #5A6F8F !important; /* Override text-white/30 with lighter blue */
+}
+
+.min-h-screen:not(.auth-page) .text-white\/50 {
+  color: #6B7F9F !important; /* Override text-white/50 with light blue */
+}
+
+.min-h-screen:not(.auth-page) .text-white\/60 {
+  color: #7A8FAF !important; /* Override text-white/60 with very light blue */
+}
+
+.min-h-screen:not(.auth-page) .text-white\/70 {
+  color: #2A3F5F !important; /* Override text-white/70 with darker blue */
+}
+
+.min-h-screen:not(.auth-page) .text-white\/80 {
+  color: #1E3A5F !important; /* Override text-white/80 with dark blue */
+}
+
+/* Fix for gold text on light backgrounds */
+.min-h-screen:not(.auth-page) .text-gold {
+  color: #8CA5FF !important; /* Use blue instead of gold on dashboard */
+}
+
+html, body { /* Apply general layout boundaries to the top-level document nodes */
+  overflow-x: hidden; /* Prevent horizontal scrolling across the application viewport */
+  max-width: 100vw; /* Lock maximum document width to prevent overflow layout breaks */
+} /* Close html and body layout boundaries */
+
+*, *::before, *::after { /* Apply global sizing reset rules to every document element */
+  box-sizing: border-box; /* Include padding and borders in total element width and height calculations */
+} /* Close global sizing reset block */
+
+::-webkit-scrollbar { /* Style the webkit scrollbar container for modern browsers */
+  width: 6px; /* Restrict webkit scrollbar width to six pixels for a sleek look */
+} /* Close webkit scrollbar block */
+
+::-webkit-scrollbar-track { /* Style the track area behind the scrollbar thumb */
+  background: rgba(30, 41, 59, 0.05); /* Set scrollbar track background to a light navy tint */
+} /* Close webkit scrollbar track block */
+
+::-webkit-scrollbar-thumb { /* Style the draggable handle part of the browser scrollbar */
+  background: rgba(140, 165, 255, 0.3); /* Set scrollbar thumb color to semi-transparent blue */
+  border-radius: 3px; /* Apply three pixel rounding border radius to the scrollbar thumb corners */
+} /* Close webkit scrollbar thumb block */
+
+::-webkit-scrollbar-thumb:hover { /* Style the scrollbar draggable handle during active user hovering */
+  background: rgba(140, 165, 255, 0.5); /* Elevate blue scrollbar thumb opacity during active hover events */
+} /* Close webkit scrollbar hover block */

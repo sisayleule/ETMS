@@ -1,0 +1,32 @@
+<svg viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shield Background -->
+  <path d="M60 10 L10 30 L10 70 Q10 110 60 130 Q110 110 110 70 L110 30 Z" fill="#D4AF37" stroke="#1E293B" stroke-width="2"/>
+  
+  <!-- Inner Shield -->
+  <path d="M60 20 L20 35 L20 70 Q20 100 60 115 Q100 100 100 70 L100 35 Z" fill="#F5F0E8" stroke="#1E293B" stroke-width="1.5"/>
+  
+  <!-- Letter 'A' with navy background -->
+  <rect x="35" y="45" width="50" height="50" rx="5" fill="#1E293B"/>
+  
+  <!-- Gold 'A' Letter -->
+  <text x="60" y="82" font-size="48" font-weight="bold" font-family="serif" fill="#D4AF37" text-anchor="middle">A</text>
+  
+  <!-- Torch Symbol -->
+  <circle cx="60" cy="35" r="8" fill="#D4AF37" stroke="#1E293B" stroke-width="1.5"/>
+  <path d="M58 35 L58 42 L62 42 L62 35" fill="#FF6B35" stroke="#1E293B" stroke-width="1"/>
+  <path d="M56 32 Q60 28 64 32" fill="none" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Open Book at bottom -->
+  <path d="M45 105 L45 115 Q60 118 75 115 L75 105 Q60 108 45 105" fill="white" stroke="#1E293B" stroke-width="1.5"/>
+  <line x1="60" y1="105" x2="60" y2="115" stroke="#1E293B" stroke-width="1"/>
+  
+  <!-- Laurel Wreaths - Left -->
+  <path d="M30 55 Q25 60 30 65 Q28 70 30 75" fill="none" stroke="#4F7942" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Laurel Wreaths - Right -->
+  <path d="M90 55 Q95 60 90 65 Q92 70 90 75" fill="none" stroke="#4F7942" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Est. Date Banner -->
+  <rect x="45" y="120" width="30" height="8" fill="#1E293B" rx="1"/>
+  <text x="60" y="126" font-size="6" font-weight="bold" font-family="sans-serif" fill="#D4AF37" text-anchor="middle">EST. 1947</text>
+</svg>

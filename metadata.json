@@ -1,0 +1,6 @@
+{
+  "name": "Educational Trip Management System",
+  "description": "Educational Trip Management System (ETMS) for Ambo University Woliso Campus, Department of Tourism and Hotel Management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
