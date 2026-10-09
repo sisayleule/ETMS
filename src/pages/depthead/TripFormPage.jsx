@@ -4,7 +4,16 @@ import { useParams, useNavigate } from 'react-router-dom' // Import router hooks
 import { useAuth } from '../../context/AuthContext' // Import auth custom hook to retrieve active user credentials
 import { fetchTripById, createTrip, updateTrip, publishTrip, updateTripStatus } from '../../lib/tripService' // Import trip database queries and services
 // Define fixed cost breakdown categories tracked on all educational trips
-const COST_CATEGORIES = ['transport', 'accommodation', 'food', 'activities', 'insurance', 'other'] // List categories
+const COST_CATEGORIES = ['transport', 'accommodation', 'food', 'activities', 'entrance_fee', 'other'] // List categories — changed insurance to entrance_fee to match DB column migration
+// Map each category key to its human-readable uppercase display label shown in the form
+const COST_CATEGORY_LABELS = { // Open label lookup object
+  transport:     'TRANSPORT',     // Transport label
+  accommodation: 'ACCOMMODATION', // Accommodation label
+  food:          'FOOD',          // Food label
+  activities:    'ACTIVITIES',    // Activities label
+  entrance_fee:  'ENTRANCE FEE',  // Entrance Fee label — replaces Insurance
+  other:         'OTHER',         // Other label
+} // Close label lookup object
 // Export main interactive TripFormPage component
 export default function TripFormPage() { // Open functional component
   const { id } = useParams() // Extract potential trip ID parameter from URL pathway
@@ -23,7 +32,7 @@ export default function TripFormPage() { // Open functional component
   const [endDate, setEndDate] = useState('') // Manage local end date state
   const [capacity, setCapacity] = useState('') // Manage local student capacity number state
   const [costBreakdown, setCostBreakdown] = useState({ // Manage individual cost categories mapping state
-    transport: 0, accommodation: 0, food: 0, activities: 0, insurance: 0, other: 0, // Set initial category costs to zero
+    transport: 0, accommodation: 0, food: 0, activities: 0, entrance_fee: 0, other: 0, // Set initial category costs to zero — entrance_fee replaces insurance
   }) // Close initial state mapping
   const [currency, setCurrency] = useState('ETB') // Manage local currency selection state
   const [paymentDueDate, setPaymentDueDate] = useState('') // Manage local payment deadline state
@@ -43,7 +52,16 @@ export default function TripFormPage() { // Open functional component
     setStartDate(trip.start_date) // Populate start date field
     setEndDate(trip.end_date) // Populate end date field
     setCapacity(trip.capacity) // Populate capacity count field
-    setCostBreakdown(trip.cost_breakdown || costBreakdown) // Populate cost breakdown numbers or retain local states
+    const rawBreakdown = trip.cost_breakdown || {} // Read stored breakdown or empty object if null — handle missing/old data gracefully
+    const safeBreakdown = { // Rebuild breakdown using only the six current keys — entrance_fee replaces insurance
+      transport:     parseFloat(rawBreakdown.transport)     || 0, // Use stored transport value or 0 if missing
+      accommodation: parseFloat(rawBreakdown.accommodation) || 0, // Use stored accommodation value or 0 if missing
+      food:          parseFloat(rawBreakdown.food)          || 0, // Use stored food value or 0 if missing
+      activities:    parseFloat(rawBreakdown.activities)    || 0, // Use stored activities value or 0 if missing
+      entrance_fee:  parseFloat(rawBreakdown.entrance_fee)  || 0, // Use stored entrance_fee or 0 — old rows have no key; insurance key is ignored here
+      other:         parseFloat(rawBreakdown.other)         || 0, // Use stored other value or 0 if missing
+    } // End safeBreakdown construction — insurance key never copied, ensuring it does not appear or sum
+    setCostBreakdown(safeBreakdown) // Populate cost breakdown numbers using sanitised object
     setCurrency(trip.currency || 'ETB') // Populate currency designation or fallback to ETB
     setPaymentDueDate(trip.payment_due_date || '') // Populate payment deadline or empty fallback
     setItinerary(trip.itinerary || []) // Populate itinerary day list or empty fallback
@@ -52,9 +70,13 @@ export default function TripFormPage() { // Open functional component
   useEffect(() => { // Mount hook to trigger database fetching if trip ID changes
     if (isEditMode) loadExistingTrip() // Fetch and populate form if we are in edit mode
   }, [id]) // Re-run hook if id changes
-  const totalCostPerStudent = Object.values(costBreakdown).reduce( // Calculate per-student sum totals from active fields
-    (sum, value) => sum + (parseFloat(value) || 0), 0 // Coerce empty entries or letters into numerical zero values
-  ) // End of sum total reduction
+  const totalCostPerStudent = // Calculate per-student sum totals from the six defined cost categories only
+    (parseFloat(costBreakdown.transport)     || 0) + // Add transport cost — coerce empty or non-numeric to zero
+    (parseFloat(costBreakdown.accommodation) || 0) + // Add accommodation cost — coerce empty or non-numeric to zero
+    (parseFloat(costBreakdown.food)          || 0) + // Add food cost — coerce empty or non-numeric to zero
+    (parseFloat(costBreakdown.activities)    || 0) + // Add activities cost — coerce empty or non-numeric to zero
+    (parseFloat(costBreakdown.entrance_fee)  || 0) + // Add entrance_fee cost — insurance is not summed here
+    (parseFloat(costBreakdown.other)         || 0)   // Add other cost — coerce empty or non-numeric to zero
   const totalTripCost = totalCostPerStudent * (parseInt(capacity) || 0) // Calculate capacity-multiplied overall trip budget costs
   const handleCostChange = (category, value) => { // Define cost change handler to update category mapping
     setCostBreakdown({ ...costBreakdown, [category]: value }) // Update selected category inside the costBreakdown dictionary
@@ -277,7 +299,7 @@ export default function TripFormPage() { // Open functional component
               <div className="space-y-3.5"> {/* Stack individual category input items */}
                 {COST_CATEGORIES.map((category) => ( // Loop through standard academic cost fields
                   <div key={category} className="flex items-center justify-between gap-4"> {/* Row item wrapper */}
-                    <label className="text-[#6B7F9F] font-sans text-xs uppercase tracking-wider font-semibold capitalize w-36">{category}</label> {/* Display label */}
+                    <label className="text-[#6B7F9F] font-sans text-xs uppercase tracking-wider font-semibold w-36">{COST_CATEGORY_LABELS[category]}</label> {/* Display human-readable label from lookup map — entrance_fee renders as "ENTRANCE FEE" */}
                     <input // Numeric input textbox
                       type="number" // Coerce inputs to numbers
                       min="0" // Disallow negative digits

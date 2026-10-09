@@ -267,11 +267,54 @@ function TripDetailPage() { // Define main TripDetailPage component function
               </div> {/* End text container */}
             </div> {/* End schedule row */}
 
-            <div className="flex items-center gap-3"> {/* Cost row */}
-              <span className="text-2xl">💰</span> {/* Money emoji */}
-              <div> {/* Text container */}
+            <div className="flex items-start gap-3"> {/* Cost row — changed items-center to items-start so emoji aligns to top when breakdown list expands the height */}
+              <span className="text-2xl mt-0.5">💰</span> {/* Money emoji — small top offset to align with first line of expanded text block */}
+              <div className="flex-1"> {/* Text container — flex-1 so breakdown list fills available width */}
                 <p className="text-[#8B9FB5] font-sans text-xs uppercase tracking-wider mb-1">Cost per Student</p> {/* Label */}
-                <p className="text-[#D4AF37] font-sans text-lg font-bold">{trip.cost_per_student} {trip.currency}</p> {/* Cost value with currency */}
+                <p className="text-[#D4AF37] font-sans text-lg font-bold mb-3">{trip.cost_per_student} {trip.currency}</p> {/* Cost value with currency — added mb-3 spacing before breakdown */}
+                {/* Cost Breakdown list — six categories matching the updated DB schema (entrance_fee replaces insurance) */}
+                {(() => { // IIFE to compute breakdown rows without polluting component scope
+                  const bd = trip.cost_breakdown || {} // Read stored breakdown or empty fallback if null
+                  const rows = [ // Define the six ordered display rows
+                    { label: 'Transport',     value: parseFloat(bd.transport)     || 0 }, // Transport row — default 0 if key missing
+                    { label: 'Accommodation', value: parseFloat(bd.accommodation) || 0 }, // Accommodation row — default 0 if key missing
+                    { label: 'Food',          value: parseFloat(bd.food)          || 0 }, // Food row — default 0 if key missing
+                    { label: 'Activities',    value: parseFloat(bd.activities)    || 0 }, // Activities row — default 0 if key missing
+                    { label: 'Entrance Fee',  value: parseFloat(bd.entrance_fee)  || 0 }, // Entrance Fee row — replaces Insurance; defaults 0 for old rows
+                    { label: 'Other',         value: parseFloat(bd.other)         || 0 }, // Other row — default 0 if key missing
+                  ] // End rows array
+                  const breakdownSum = rows.reduce((s, r) => s + r.value, 0) // Sum the six values to check consistency
+                  const storedTotal = parseFloat(trip.cost_per_student) || 0 // Authoritative stored total for comparison
+                  const mismatch = Math.abs(breakdownSum - storedTotal) > 0.01 // Flag mismatch if difference exceeds rounding tolerance
+                  return ( // Return rendered breakdown list
+                    <div className="space-y-1.5 text-xs font-sans border-t border-[#E5EDFF] pt-2"> {/* Stack rows with top divider matching card style */}
+                      {rows.map((row) => ( // Loop through the six display rows
+                        <div // Individual category row wrapper
+                          key={row.label} // Unique key per label
+                          className="flex justify-between items-center" // Side-by-side layout
+                        > {/* Open row div */}
+                          <span className={`uppercase tracking-wider ${row.value === 0 ? 'text-[#B0BFD0]' : 'text-[#8B9FB5]'}`}> {/* Muted for zero rows */}
+                            {row.label} {/* Category label */}
+                          </span> {/* Close label */}
+                          <span className={`font-medium ${row.value === 0 ? 'text-[#B0BFD0]' : 'text-[#1E3A5F]'}`}> {/* Muted for zero amounts */}
+                            {row.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {trip.currency} {/* Formatted value with trip currency */}
+                          </span> {/* Close value */}
+                        </div> // Close row
+                      ))} {/* End loop */}
+                      <div className="flex justify-between items-center pt-1.5 border-t border-[#E5EDFF] font-semibold text-[#1E3A5F]"> {/* Total row with divider */}
+                        <span className="uppercase tracking-wider text-[#8B9FB5]">Total</span> {/* Total label */}
+                        <span className="text-[#D4AF37]"> {/* Gold color matching the cost_per_student display above */}
+                          {storedTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {trip.currency} {/* Authoritative total — consistent with header value */}
+                        </span> {/* Close total value */}
+                      </div> {/* Close total row */}
+                      {mismatch && ( // Render mismatch note only when itemised sum differs from cost_per_student
+                        <p className="text-[#B0BFD0] text-[10px] italic pt-1"> {/* Muted small mismatch notice */}
+                          Itemized amounts may not add up to the total. {/* Inform of data inconsistency without hiding either number */}
+                        </p> // Close mismatch note
+                      )} {/* End mismatch check */}
+                    </div> // Close breakdown list
+                  ) // End return
+                })()} {/* End IIFE */}
               </div> {/* End text container */}
             </div> {/* End cost row */}
 
